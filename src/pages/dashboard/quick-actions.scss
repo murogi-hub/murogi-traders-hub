@@ -1,0 +1,102 @@
+.quick-actions {
+    --qa-card: #12193a;
+    --qa-border: #232c55;
+    --qa-orange: #ff6b4a;
+    --qa-green: var(--brand-success, #2ed8a7);
+    --qa-purple: var(--brand-tertiary, #a76bff);
+    --qa-yellow: var(--brand-warning, #ffc94a);
+
+    margin: 0 0 2.4rem;
+
+    &__label {
+        font-family: var(--brand-font-monospace, 'IBM Plex Mono', monospace);
+        font-size: 1.1rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-less-prominent, #8b92b8);
+        margin-bottom: 1.2rem;
+    }
+
+    &__cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.4rem;
+    }
+
+    &__card {
+        --qa-c: var(--qa-orange);
+
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        background: var(--qa-card);
+        border: 1px solid var(--qa-border);
+        border-top: 3px solid var(--qa-c);
+        border-radius: 1.2rem;
+        padding: 1.8rem;
+        cursor: pointer;
+        transition:
+            transform 0.15s ease,
+            box-shadow 0.15s ease;
+        font-family: inherit;
+
+        &:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--qa-c);
+            outline-offset: 2px;
+        }
+
+        &--orange {
+            --qa-c: var(--qa-orange);
+        }
+
+        &--green {
+            --qa-c: var(--qa-green);
+        }
+
+        &--purple {
+            --qa-c: var(--qa-purple);
+        }
+
+        &--yellow {
+            --qa-c: var(--qa-yellow);
+        }
+    }
+
+    &__icon {
+        font-size: 2rem;
+        width: 4.4rem;
+        height: 4.4rem;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.4rem;
+        background: color-mix(in srgb, var(--qa-c) 18%, transparent);
+    }
+
+    &__title {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: #f1f3fa;
+        margin-bottom: 0.4rem;
+    }
+
+    &__description {
+        font-size: 1.25rem;
+        color: #8b92b8;
+        line-height: 1.5;
+        margin-bottom: 1.4rem;
+    }
+
+    &__cta {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--qa-c);
+    }
+}
