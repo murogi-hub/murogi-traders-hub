@@ -60,8 +60,10 @@
     "platform": {
         "name": "Hunna Bot",
         "logo": {
-            "type": "component",
+            "type": "image",
             "component_name": "BrandLogo",
+            "image_path": "/assets/branding/logo-mark.png",
+            "full_image_path": "/assets/branding/logo.png",
             "alt_text": "Trade With Hunna",
             "link_url": "/",
             "show_text": true,

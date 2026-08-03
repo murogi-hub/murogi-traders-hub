@@ -141,6 +141,14 @@ const Layout = observer(() => {
         }
     }, [isAuthenticating, isInitialAuthCheckComplete]);
 
+    // Suppress the persistent utility footer (fullscreen/theme/language) while the
+    // logged-out landing page is showing — it renders its own footer.
+    const layout_url_params = new URLSearchParams(window.location.search);
+    const is_layout_oauth_callback = Boolean(layout_url_params.get('code') && layout_url_params.get('state'));
+    const layout_has_stored_session = !!localStorage.getItem('active_loginid');
+    const is_landing_page_active =
+        !store?.client?.is_logged_in && !is_layout_oauth_callback && !layout_has_stored_session;
+
     return (
         <div
             className={clsx('layout', {
@@ -152,7 +160,7 @@ const Layout = observer(() => {
             <Body>
                 <Outlet />
             </Body>
-            {!isCallbackPage && isDesktop && <Footer />}
+            {!isCallbackPage && isDesktop && !is_landing_page_active && <Footer />}
         </div>
     );
 });

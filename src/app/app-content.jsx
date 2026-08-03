@@ -20,6 +20,7 @@ import BlocklyLoading from '../components/blockly-loading';
 import BotStopped from '../components/bot-stopped';
 import BotBuilder from '../pages/bot-builder';
 import Main from '../pages/main';
+import LandingPage from '../pages/landing/landing';
 import './app.scss';
 import 'react-toastify/dist/ReactToastify.css';
 import '../components/bot-notification/bot-notification.scss';
@@ -161,6 +162,18 @@ const AppContent = observer(() => {
     }, [is_api_initialized, client.loginid]);
 
     if (common?.error) return null;
+
+    // Show the marketing landing page to first-time / logged-out visitors.
+    // Skip it during an in-flight OAuth callback (?code&state) or when a
+    // previous session token is present, so returning users go straight in.
+    const url_params = new URLSearchParams(window.location.search);
+    const is_oauth_callback = Boolean(url_params.get('code') && url_params.get('state'));
+    const has_stored_session = !!window.localStorage.getItem('active_loginid');
+    const should_show_landing = !is_loading && !client.is_logged_in && !is_oauth_callback && !has_stored_session;
+
+    if (should_show_landing) {
+        return <LandingPage />;
+    }
 
     return is_loading ? (
         <ChunkLoader message={localize('Initializing Deriv Bot account...')} />

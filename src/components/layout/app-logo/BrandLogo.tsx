@@ -1,38 +1,42 @@
-// Trade With Hunna brand wordmark
+// Trade With Hunna brand mark (raster logo, see /public/assets/branding)
+import brandConfig from '@/../brand.config.json';
 
 type TBrandLogoProps = {
     width?: number;
     height?: number;
+    /** Unused for the raster mark; kept so existing width/height-only call sites keep compiling */
     fill?: string;
     className?: string;
+    /** Show the "Hunna Bot" wordmark next to the icon mark */
+    showText?: boolean;
 };
 
-export const BrandLogo = ({
-    width = 150,
-    height = 32,
-    fill = 'currentColor',
-    className = ''
-}: TBrandLogoProps) => {
+export const BrandLogo = ({ width, height = 32, className = '', showText }: TBrandLogoProps) => {
+    const logo_config = brandConfig.platform.logo;
+    const should_show_text = showText ?? logo_config.show_text;
+    // Icon mark crop is ~844x764 (no embedded wordmark) — keep that aspect ratio when only height is given.
+    const computed_width = width ?? Math.round((height * 844) / 764);
+
     return (
-        <svg
-            width={width}
-            height={height}
-            viewBox="0 0 150 32"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className={className}
-            aria-label="Trade With Hunna"
+        <span
+            className={`brand-logo ${className}`}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.8rem', lineHeight: 1 }}
         >
-            <text
-                x="0"
-                y="22"
-                fontFamily="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
-                fontSize="20"
-                fontWeight="700"
-                fill={fill}
-            >
-                Hunna<tspan fill="#ff5a5a">Bot</tspan>
-            </text>
-        </svg>
+            <img
+                src='/assets/branding/logo-mark.png'
+                alt={logo_config.alt_text}
+                width={computed_width}
+                height={height}
+                style={{ display: 'block', height, width: computed_width, objectFit: 'contain' }}
+            />
+            {should_show_text && (
+                <span
+                    className='brand-logo__text'
+                    style={{ fontWeight: 800, fontSize: `${Math.max(height * 0.5, 14)}px`, color: 'inherit' }}
+                >
+                    {logo_config.text}
+                </span>
+            )}
+        </span>
     );
 };

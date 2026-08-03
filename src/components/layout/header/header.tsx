@@ -225,6 +225,16 @@ const AppHeader = observer(() => {
 
     if (client?.should_hide_header) return null;
 
+    // The landing page (shown to logged-out, first-time visitors) renders its own
+    // nav bar, so suppress the app header in that state to avoid a duplicate.
+    const url_params = new URLSearchParams(window.location.search);
+    const is_oauth_callback = Boolean(url_params.get('code') && url_params.get('state'));
+    const has_stored_session = !!window.localStorage.getItem('active_loginid');
+    const is_landing_page_active =
+        !client?.is_logged_in && !isAuthorizing && !activeLoginid && !is_oauth_callback && !has_stored_session;
+
+    if (is_landing_page_active) return null;
+
     return (
         <>
             <Header

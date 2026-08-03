@@ -1,0 +1,241 @@
+.landing {
+    --l-bg: var(--brand-secondary, #0a0f1e);
+    --l-card: #12193a;
+    --l-card-border: #232c55;
+    --l-text: #f1f3fa;
+    --l-text-dim: #8b92b8;
+    --l-accent: var(--brand-info, #5b8cff);
+    --l-green: var(--brand-success, #2ed8a7);
+    --l-purple: var(--brand-tertiary, #a76bff);
+    --l-red: var(--brand-primary, #ff5c6c);
+
+    min-height: 100vh;
+    background: var(--l-bg);
+    color: var(--l-text);
+    font-family: var(--brand-font-primary, 'Inter', sans-serif);
+    -webkit-font-smoothing: antialiased;
+
+    &__topnav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.4rem 2.4rem;
+        position: relative;
+        z-index: 5;
+    }
+
+    &__login-btn {
+        background: #fff;
+        color: #0a0f1e;
+        font-weight: 700;
+        font-size: 1.35rem;
+        padding: 0.9rem 1.8rem;
+        border-radius: 999px;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    &__ticker-bar {
+        background: #070a16;
+        border-block: 1px solid var(--l-card-border);
+        overflow: hidden;
+        white-space: nowrap;
+        padding: 0.9rem 0;
+    }
+
+    &__ticker-track {
+        display: inline-block;
+        animation: landing-scroll 30s linear infinite;
+    }
+
+    &__ticker-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-family: var(--brand-font-monospace, 'IBM Plex Mono', monospace);
+        font-size: 1.2rem;
+        padding: 0 2.2rem;
+        border-right: 1px solid var(--l-card-border);
+        color: var(--l-text-dim);
+
+        b {
+            color: var(--l-text);
+        }
+
+        &--up {
+            color: var(--l-green);
+        }
+
+        &--down {
+            color: var(--l-red);
+        }
+    }
+
+    &__hero {
+        text-align: center;
+        padding: 7rem 2.4rem 6rem;
+        background:
+            radial-gradient(ellipse 900px 460px at 20% 0%, rgba(91, 140, 255, 0.18), transparent 60%),
+            radial-gradient(ellipse 900px 460px at 80% 10%, rgba(46, 216, 167, 0.12), transparent 60%);
+    }
+
+    &__rotating-headline {
+        min-height: 1.3em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(3.4rem, 6vw, 5.8rem);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin: 0 0 3.4rem;
+        line-height: 1.08;
+
+        span {
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            color: var(--l-green);
+        }
+
+        span.is-visible {
+            opacity: 1;
+        }
+    }
+
+    &__cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem;
+        background: linear-gradient(135deg, var(--l-green), #1faf87);
+        color: #04120c;
+        font-weight: 700;
+        font-size: 1.6rem;
+        padding: 1.6rem 3rem;
+        border-radius: 1.2rem;
+        border: none;
+        cursor: pointer;
+    }
+
+    &__cta-notes {
+        display: flex;
+        justify-content: center;
+        gap: 2.6rem;
+        margin-top: 2.2rem;
+        font-size: 1.3rem;
+        color: var(--l-text-dim);
+        flex-wrap: wrap;
+    }
+
+    &__testimonials {
+        max-width: 118rem;
+        margin: 6.4rem auto 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.8rem;
+        padding: 0 2.4rem;
+    }
+
+    &__t-card {
+        background: var(--l-card);
+        border: 1px solid var(--l-card-border);
+        border-radius: 1.4rem;
+        padding: 2.6rem 2.2rem 2.2rem;
+        text-align: left;
+    }
+
+    &__t-avatar {
+        width: 4.4rem;
+        height: 4.4rem;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--l-accent), var(--l-purple));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.4rem;
+        margin-bottom: 1.8rem;
+    }
+
+    &__t-quote {
+        font-size: 1.35rem;
+        color: #c9cde6;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+    &__t-name {
+        font-weight: 700;
+        font-size: 1.4rem;
+    }
+
+    &__t-role {
+        font-size: 1.25rem;
+        color: var(--l-accent);
+        margin-bottom: 0.8rem;
+    }
+
+    &__t-stars {
+        color: #ffc94a;
+        font-size: 1.3rem;
+        letter-spacing: 0.2rem;
+    }
+
+    &__disclaimer {
+        max-width: 70rem;
+        margin: 4rem auto 0;
+        text-align: center;
+        font-size: 1.15rem;
+        color: #5c6389;
+        padding: 0 2.4rem;
+    }
+
+    &__stats {
+        max-width: 90rem;
+        margin: 6.4rem auto 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1.6rem;
+        padding: 0 2.4rem;
+        text-align: center;
+    }
+
+    &__stat-circle {
+        background: var(--l-card);
+        border: 1px solid var(--l-card-border);
+        border-radius: 50%;
+        width: 11rem;
+        height: 11rem;
+        margin: 0 auto 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 2rem;
+        color: var(--l-green);
+    }
+
+    &__stat-label {
+        font-size: 1.3rem;
+        color: var(--l-text-dim);
+    }
+
+    &__footer {
+        text-align: center;
+        padding: 2.6rem;
+        color: var(--l-text-dim);
+        font-size: 1.2rem;
+        font-family: var(--brand-font-monospace, 'IBM Plex Mono', monospace);
+        border-top: 1px solid var(--l-card-border);
+    }
+}
+
+@keyframes landing-scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
