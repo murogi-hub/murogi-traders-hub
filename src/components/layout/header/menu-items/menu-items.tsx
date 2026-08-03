@@ -38,10 +38,16 @@
 
 import { observer } from 'mobx-react-lite';
 import { MenuItem, Text } from '@deriv-com/ui';
+import { OAuthTokenExchangeService } from '@/services/oauth-token-exchange.service';
 
 export const MenuItems = observer(() => {
+    const token = OAuthTokenExchangeService.getAccessToken();
+    const charts_url = token
+        ? `https://trade-with-hunna-dtrader.onrender.com/?sso_token=${encodeURIComponent(token)}`
+        : 'https://trade-with-hunna-dtrader.onrender.com/';
+
     return (
-        <MenuItem as='a' className='app-header__menu' href='https://trade-with-hunna-dtrader.onrender.com/'>
+        <MenuItem as='a' className='app-header__menu' href={charts_url}>
             <Text size='sm'>Charts</Text>
         </MenuItem>
     );

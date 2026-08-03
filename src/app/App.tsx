@@ -75,6 +75,21 @@ function App() {
     // Handle account switching via URL parameter
     useAccountSwitching();
 
+    // Consume a token handed off from a sibling app (e.g. the charts site) so
+    // the user doesn't need to log in again here. Runs once on mount.
+    React.useEffect(() => {
+        const url_params = new URLSearchParams(window.location.search);
+        const sso_token = url_params.get('sso_token');
+        if (sso_token) {
+            OAuthTokenExchangeService.applyExternalAccessToken(sso_token).finally(() => {
+                url_params.delete('sso_token');
+                const new_search = url_params.toString();
+                const new_url = `${window.location.pathname}${new_search ? `?${new_search}` : ''}${window.location.hash}`;
+                window.history.replaceState({}, document.title, new_url);
+            });
+        }
+    }, []);
+
     // Process the authorization code when OAuth callback is valid
     React.useEffect(() => {
         if (!isProcessing && isValid && params.code) {

@@ -333,4 +333,53 @@ export class OAuthTokenExchangeService {
             };
         }
     }
+
+    /**
+     * Consume an access token handed off from a trusted sibling app (e.g. the
+     * charts/dtrader site) via a one-time URL param, so the user doesn't have
+     * to log in again on this site. Mirrors the account-population logic used
+     * after a normal PKCE exchange.
+     * @param access_token - a currently-valid Deriv access token
+     * @param expires_in - seconds until expiry (defaults to 1 hour if unknown)
+     */
+    static async applyExternalAccessToken(
+        access_token: string,
+        expires_in = 3600
+    ): Promise<{ success: boolean; error?: string }> {
+        try {
+            const authInfo: AuthInfo = {
+                access_token,
+                token_type: 'bearer',
+                expires_in,
+                expires_at: Date.now() + expires_in * 1000,
+            };
+            sessionStorage.setItem('auth_info', JSON.stringify(authInfo));
+
+            const { DerivWSAccountsService } = await import('./derivws-accounts.service');
+            const accounts = await DerivWSAccountsService.fetchAccountsList(access_token);
+
+            if (!accounts || accounts.length === 0) {
+                this.clearAuthInfo();
+                return { success: false, error: 'no_accounts' };
+            }
+
+            DerivWSAccountsService.storeAccounts(accounts);
+            const firstAccount = accounts[0];
+            localStorage.setItem('active_loginid', firstAccount.account_id);
+            const isDemo = firstAccount.account_id.startsWith('VRT') || firstAccount.account_id.startsWith('VRTC');
+            localStorage.setItem('account_type', isDemo ? 'demo' : 'real');
+
+            const { api_base } = await import('@/external/bot-skeleton');
+            await api_base.init(true);
+
+            ErrorLogger.info('OAuth', 'Applied externally-supplied access token', {
+                loginid: firstAccount.account_id,
+            });
+            return { success: true };
+        } catch (error) {
+            ErrorLogger.error('OAuth', 'Error applying external access token', error);
+            this.clearAuthInfo();
+            return { success: false, error: error instanceof Error ? error.message : 'unknown_error' };
+        }
+    }
 }
