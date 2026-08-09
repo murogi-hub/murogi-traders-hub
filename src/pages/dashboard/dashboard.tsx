@@ -34,8 +34,8 @@ const DashboardComponent = observer(({ handleTabChange }: TMobileIconGuide) => {
                     {client.is_logged_in && (
                         <Announcements is_mobile={!isDesktop} is_tablet={isTablet} handleTabChange={handleTabChange} />
                     )}
-                    <QuickActions />
                     <DigitTools />
+                    <QuickActions />
                     <div className='quick-panel'>
                         <div
                             className={classNames('tab__dashboard__header', {
