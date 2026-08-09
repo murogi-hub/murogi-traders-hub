@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BACKEND_URL, Bot, SiteSettings } from './backend-config';
+import DigitTools from './digit-tools';
 import './site-dashboard.scss';
 
 const DTRADER_URL = 'https://trade-with-hunna-dtrader.onrender.com/';
@@ -69,6 +70,8 @@ const SiteDashboard = () => {
                         <span className='twh-card__open'>Open →</span>
                     </a>
                 </div>
+
+                <DigitTools />
 
                 <div className='twh-dashboard__label'>Your Bots</div>
                 <div className='twh-dashboard__cards'>
