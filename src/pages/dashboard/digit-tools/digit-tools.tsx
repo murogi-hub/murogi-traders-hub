@@ -183,8 +183,8 @@ const DigitTools = () => {
                     <div className='twh-digit-tools__bar twh-digit-tools__bar--over'>
                         <div className='twh-digit-tools__bar-label'>
                             <span>Over {barrier}</span>
-                            <span>{stats.overPct.toFixed(1)}%</span>
                         </div>
+                        <div className='twh-digit-tools__bar-pct'>{stats.overPct.toFixed(1)}%</div>
                         <div className='twh-digit-tools__bar-track'>
                             <div className='twh-digit-tools__bar-fill' style={{ width: `${stats.overPct}%` }} />
                         </div>
@@ -192,8 +192,8 @@ const DigitTools = () => {
                     <div className='twh-digit-tools__bar twh-digit-tools__bar--under'>
                         <div className='twh-digit-tools__bar-label'>
                             <span>Under {barrier}</span>
-                            <span>{stats.underPct.toFixed(1)}%</span>
                         </div>
+                        <div className='twh-digit-tools__bar-pct'>{stats.underPct.toFixed(1)}%</div>
                         <div className='twh-digit-tools__bar-track'>
                             <div className='twh-digit-tools__bar-fill' style={{ width: `${stats.underPct}%` }} />
                         </div>
@@ -214,9 +214,13 @@ const DigitTools = () => {
                     )}
                 </div>
 
-                <p className='twh-digit-tools__disclaimer'>
-                    ⚠ For informational purposes only. Past digit frequency does not predict future outcomes.
-                </p>
+                <div className='twh-digit-tools__disclaimer'>
+                    <span className='twh-digit-tools__disclaimer-icon'>&#9888;</span>
+                    <span>
+                        <strong>Risk Disclaimer:</strong> For informational purposes only. Past digit frequency does
+                        not predict future outcomes.
+                    </span>
+                </div>
             </div>
         </div>
     );
