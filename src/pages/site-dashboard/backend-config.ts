@@ -1,4 +1,4 @@
-export const BACKEND_URL = 'https://trade-with-hunna-backend.onrender.com';
+export const BACKEND_URL = 'https://trade-with-hunna-bot-b.onrender.com';
 
 export interface Bot {
     id: string;
