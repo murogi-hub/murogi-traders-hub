@@ -31,6 +31,7 @@ import {
 } from '@/utils/trade-type-modal-handler';
 import {
     LabelPairedChartLineCaptionRegularIcon,
+    LabelPairedGaugeMaxCaptionRegularIcon,
     LabelPairedObjectsColumnCaptionRegularIcon,
     LabelPairedPuzzlePieceTwoCaptionBoldIcon,
 } from '@deriv/quill-icons/LabelPaired';
@@ -45,6 +46,7 @@ import './main.scss';
 
 const ChartWrapper = lazy(() => import('../chart/chart-wrapper'));
 const Tutorial = lazy(() => import('../tutorials'));
+const DCircles = lazy(() => import('../d-circles'));
 
 const AppWrapper = observer(() => {
     const { connectionStatus } = useApiBase();
@@ -387,6 +389,23 @@ const AppWrapper = observer(() => {
                                 id='id-dbot-dashboard'
                             >
                                 <Dashboard handleTabChange={handleTabChange} />
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <LabelPairedGaugeMaxCaptionRegularIcon
+                                            height='24px'
+                                            width='24px'
+                                            fill='var(--text-general)'
+                                        />
+                                        <Localize i18n_default_text='D-Circles' />
+                                    </>
+                                }
+                                id='id-d-circles'
+                            >
+                                <Suspense fallback={<ChunkLoader message={localize('Loading...')} />}>
+                                    <DCircles />
+                                </Suspense>
                             </div>
                             <div
                                 label={

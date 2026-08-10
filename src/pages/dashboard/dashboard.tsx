@@ -8,7 +8,6 @@ import { useDevice } from '@deriv-com/ui';
 import OnboardTourHandler from '../tutorials/dbot-tours/onboarding-tour';
 import Announcements from './announcements';
 import Cards from './cards';
-import DigitTools from './digit-tools/digit-tools';
 import InfoPanel from './info-panel';
 import QuickActions from './quick-actions';
 
@@ -34,7 +33,6 @@ const DashboardComponent = observer(({ handleTabChange }: TMobileIconGuide) => {
                     {client.is_logged_in && (
                         <Announcements is_mobile={!isDesktop} is_tablet={isTablet} handleTabChange={handleTabChange} />
                     )}
-                    <DigitTools />
                     <QuickActions />
                     <div className='quick-panel'>
                         <div
