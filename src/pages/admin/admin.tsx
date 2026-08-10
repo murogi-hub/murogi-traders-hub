@@ -11,7 +11,12 @@ function fileToDataUrl(file: File): Promise<string> {
     });
 }
 
+const MAX_IMAGE_BYTES = 8 * 1024 * 1024; // 8MB - matches the backend's limit
+
 async function uploadImage(file: File, bucket: 'bot-images' | 'branding'): Promise<string> {
+    if (file.size > MAX_IMAGE_BYTES) {
+        throw new Error(`Image is too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Max size is 8MB.`);
+    }
     const dataUrl = await fileToDataUrl(file);
     const res = await fetch(`${BACKEND_URL}/api/admin/upload-image`, {
         method: 'POST',
@@ -20,7 +25,7 @@ async function uploadImage(file: File, bucket: 'bot-images' | 'branding'): Promi
         body: JSON.stringify({ dataUrl, bucket, fileName: file.name }),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'upload_failed');
+    if (!res.ok) throw new Error(data.message || data.error || 'Image upload failed.');
     return data.url;
 }
 
@@ -134,13 +139,16 @@ const AdminPage = () => {
                     logo_url: newLogoUrl,
                 }),
             });
-            if (!res.ok) throw new Error('save_failed');
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.message || data.error || 'Could not save branding.');
+            }
             setLogoUrl(newLogoUrl);
             setLogoFile(null);
             setBrandingMsg('Saved.');
             setTimeout(() => setBrandingMsg(''), 2500);
-        } catch {
-            alert('Could not save branding. Try again.');
+        } catch (err) {
+            alert(err instanceof Error ? err.message : 'Could not save branding. Try again.');
         } finally {
             setSavingBranding(false);
         }
@@ -204,11 +212,14 @@ const AdminPage = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
-            if (!res.ok) throw new Error('save_failed');
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.message || data.error || 'Could not save bot.');
+            }
             setFormOpen(false);
             await loadBots();
-        } catch {
-            setBotFormError('Could not save bot. Try again.');
+        } catch (err) {
+            setBotFormError(err instanceof Error ? err.message : 'Could not save bot. Try again.');
         } finally {
             setSavingBot(false);
         }
