@@ -393,23 +393,6 @@ const AppWrapper = observer(() => {
                             <div
                                 label={
                                     <>
-                                        <LabelPairedGaugeMaxCaptionRegularIcon
-                                            height='24px'
-                                            width='24px'
-                                            fill='var(--text-general)'
-                                        />
-                                        <Localize i18n_default_text='D-Circles' />
-                                    </>
-                                }
-                                id='id-d-circles'
-                            >
-                                <Suspense fallback={<ChunkLoader message={localize('Loading...')} />}>
-                                    <DCircles />
-                                </Suspense>
-                            </div>
-                            <div
-                                label={
-                                    <>
                                         <LabelPairedPuzzlePieceTwoCaptionBoldIcon
                                             height='24px'
                                             width='24px'
@@ -466,6 +449,23 @@ const AppWrapper = observer(() => {
                                         <Tutorial handleTabChange={handleTabChange} />
                                     </Suspense>
                                 </div>
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <LabelPairedGaugeMaxCaptionRegularIcon
+                                            height='24px'
+                                            width='24px'
+                                            fill='var(--text-general)'
+                                        />
+                                        <Localize i18n_default_text='D-Circles' />
+                                    </>
+                                }
+                                id='id-d-circles'
+                            >
+                                <Suspense fallback={<ChunkLoader message={localize('Loading...')} />}>
+                                    <DCircles />
+                                </Suspense>
                             </div>
                         </Tabs>
                         {!isDesktop && right_tab_shadow && <span className='tabs-shadow tabs-shadow--right' />}{' '}
