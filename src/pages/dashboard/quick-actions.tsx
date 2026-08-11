@@ -1,4 +1,5 @@
 import { observer } from 'mobx-react-lite';
+import { useMemo } from 'react';
 import { DBOT_TABS } from '@/constants/bot-contents';
 import { useLogout } from '@/hooks/useLogout';
 import { useStore } from '@/hooks/useStore';
@@ -15,10 +16,19 @@ type TQuickAction = {
     onClick: () => void;
 };
 
+const QUOTES = [
+    localize('Small consistent gains build extraordinary wealth.'),
+    localize('Discipline turns strategy into results.'),
+    localize('Protect your capital first, profits follow.'),
+    localize('Every trade is a lesson - review, refine, repeat.'),
+    localize('Patience is a position too.'),
+];
+
 const QuickActions = observer(() => {
-    const { dashboard } = useStore();
+    const { dashboard, client } = useStore();
     const { setActiveTab } = dashboard;
     const handleLogout = useLogout();
+    const quote = useMemo(() => QUOTES[Math.floor(Math.random() * QUOTES.length)], []);
 
     const actions: TQuickAction[] = [
         {
@@ -61,6 +71,12 @@ const QuickActions = observer(() => {
 
     return (
         <div className='quick-actions'>
+            <div className='quick-actions__greeting'>
+                <h2>
+                    {localize('Hello')} {client?.is_logged_in ? client.loginid : localize('Trader')} <span>&#128075;</span>
+                </h2>
+                <p>&ldquo;{quote}&rdquo;</p>
+            </div>
             <div className='quick-actions__label'>{localize('Quick Actions')}</div>
             <div className='quick-actions__cards'>
                 {actions.map(action => (
@@ -70,7 +86,12 @@ const QuickActions = observer(() => {
                         className={`quick-actions__card quick-actions__card--${action.color}`}
                         onClick={action.onClick}
                     >
-                        <span className='quick-actions__icon'>{action.icon}</span>
+                        <div className='quick-actions__card-top'>
+                            <span className='quick-actions__icon'>{action.icon}</span>
+                            <span className='quick-actions__arrow' aria-hidden='true'>
+                                &rarr;
+                            </span>
+                        </div>
                         <span className='quick-actions__title'>{action.title}</span>
                         <span className='quick-actions__description'>{action.description}</span>
                         <span className='quick-actions__cta'>
