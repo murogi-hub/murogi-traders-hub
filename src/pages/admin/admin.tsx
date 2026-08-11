@@ -12,6 +12,7 @@ function fileToDataUrl(file: File): Promise<string> {
 }
 
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024; // 8MB - matches the backend's limit
+const MAX_BOT_FILE_BYTES = 5 * 1024 * 1024; // 5MB - matches the backend's limit
 
 async function uploadImage(file: File, bucket: 'bot-images' | 'branding'): Promise<string> {
     if (file.size > MAX_IMAGE_BYTES) {
@@ -29,7 +30,31 @@ async function uploadImage(file: File, bucket: 'bot-images' | 'branding'): Promi
     return data.url;
 }
 
-const emptyBotForm = { id: '', name: '', description: '', image_url: '', is_active: true };
+async function uploadBotFile(file: File): Promise<string> {
+    if (file.size > MAX_BOT_FILE_BYTES) {
+        throw new Error(`File is too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Max size is 5MB.`);
+    }
+    const dataUrl = await fileToDataUrl(file);
+    const res = await fetch(`${BACKEND_URL}/api/admin/upload-bot-file`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dataUrl, fileName: file.name }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || data.error || 'Bot file upload failed.');
+    return data.url;
+}
+
+const emptyBotForm = {
+    id: '',
+    name: '',
+    description: '',
+    image_url: '',
+    bot_file_url: '',
+    bot_file_name: '',
+    is_active: true,
+};
 
 const AdminPage = () => {
     const [checking, setChecking] = useState(true);
@@ -51,6 +76,7 @@ const AdminPage = () => {
     const [botForm, setBotForm] = useState(emptyBotForm);
     const [botImageFile, setBotImageFile] = useState<File | null>(null);
     const [botImagePreview, setBotImagePreview] = useState('');
+    const [botStrategyFile, setBotStrategyFile] = useState<File | null>(null);
     const [botFormError, setBotFormError] = useState('');
     const [savingBot, setSavingBot] = useState(false);
 
@@ -158,6 +184,7 @@ const AdminPage = () => {
         setBotForm(emptyBotForm);
         setBotImageFile(null);
         setBotImagePreview('');
+        setBotStrategyFile(null);
         setBotFormError('');
         setFormOpen(true);
     };
@@ -168,10 +195,13 @@ const AdminPage = () => {
             name: bot.name,
             description: bot.description || '',
             image_url: bot.image_url || '',
+            bot_file_url: bot.bot_file_url || '',
+            bot_file_name: bot.bot_file_name || '',
             is_active: bot.is_active,
         });
         setBotImageFile(null);
         setBotImagePreview(bot.image_url || '');
+        setBotStrategyFile(null);
         setBotFormError('');
         setFormOpen(true);
     };
@@ -181,6 +211,13 @@ const AdminPage = () => {
         if (!file) return;
         setBotImageFile(file);
         setBotImagePreview(URL.createObjectURL(file));
+    };
+
+    const handleBotStrategyFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setBotStrategyFile(file);
+        setBotForm(f => ({ ...f, bot_file_name: file.name }));
     };
 
     const handleSaveBot = async () => {
@@ -196,10 +233,18 @@ const AdminPage = () => {
             if (botImageFile) {
                 imageUrl = await uploadImage(botImageFile, 'bot-images');
             }
+            let botFileUrl = botForm.bot_file_url;
+            let botFileName = botForm.bot_file_name;
+            if (botStrategyFile) {
+                botFileUrl = await uploadBotFile(botStrategyFile);
+                botFileName = botStrategyFile.name;
+            }
             const payload = {
                 name,
                 description: botForm.description.trim(),
                 image_url: imageUrl,
+                bot_file_url: botFileUrl,
+                bot_file_name: botFileName,
                 is_active: botForm.is_active,
             };
             const url = botForm.id
@@ -329,6 +374,16 @@ const AdminPage = () => {
                             <label>Picture</label>
                             <input type='file' accept='image/*' onChange={handleBotImageChange} />
                             {botImagePreview && <img className='twh-admin__img-preview' src={botImagePreview} alt='' />}
+                            <label>Bot file (.xml strategy exported from Bot Builder)</label>
+                            <input type='file' accept='.xml,text/xml' onChange={handleBotStrategyFileChange} />
+                            {botForm.bot_file_name && (
+                                <p className='twh-admin__hint'>📄 {botForm.bot_file_name}</p>
+                            )}
+                            {!botForm.bot_file_name && (
+                                <p className='twh-admin__hint'>
+                                    Without a bot file, this bot won&apos;t be openable from Free Bots.
+                                </p>
+                            )}
                             <label className='twh-admin__checkbox-label'>
                                 <input
                                     type='checkbox'
@@ -363,6 +418,11 @@ const AdminPage = () => {
                                 <div className='twh-admin__bot-row-info'>
                                     <h4>{bot.name}</h4>
                                     <p>{bot.description}</p>
+                                    <p className='twh-admin__hint'>
+                                        {bot.bot_file_name
+                                            ? `📄 ${bot.bot_file_name}`
+                                            : '⚠ No bot file attached'}
+                                    </p>
                                 </div>
                                 <div className='twh-admin__bot-row-actions'>
                                     <button onClick={() => openEditBot(bot)}>Edit</button>

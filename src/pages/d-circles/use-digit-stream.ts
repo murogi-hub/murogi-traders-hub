@@ -91,7 +91,7 @@ export function useDigitStream(symbol: string, maxTicks: number): DigitStreamRes
                 setError(null);
                 retryCount = 0;
                 hasConnectedOnce = true;
-                ws.send(JSON.stringify({ active_symbols: 'brief', product_type: 'basic' }));
+                ws.send(JSON.stringify({ active_symbols: 'brief' }));
             };
 
             ws.onmessage = event => {

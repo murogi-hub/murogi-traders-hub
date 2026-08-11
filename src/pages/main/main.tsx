@@ -47,6 +47,7 @@ import './main.scss';
 const ChartWrapper = lazy(() => import('../chart/chart-wrapper'));
 const Tutorial = lazy(() => import('../tutorials'));
 const DCircles = lazy(() => import('../d-circles'));
+const FreeBots = lazy(() => import('../free-bots'));
 
 const AppWrapper = observer(() => {
     const { connectionStatus } = useApiBase();
@@ -79,7 +80,7 @@ const AppWrapper = observer(() => {
     const { clear } = summary_card;
     const { DASHBOARD, BOT_BUILDER } = DBOT_TABS;
     const init_render = React.useRef(true);
-    const hash = ['dashboard', 'bot_builder', 'chart', 'tutorial'];
+    const hash = ['dashboard', 'bot_builder', 'chart', 'free_bots', 'tutorial'];
     const { isDesktop } = useDevice();
     const location = useLocation();
     const navigate = useNavigate();
@@ -424,6 +425,21 @@ const AppWrapper = observer(() => {
                                     fallback={<ChunkLoader message={localize('Please wait, loading chart...')} />}
                                 >
                                     <ChartWrapper show_digits_stats={false} />
+                                </Suspense>
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <span role='img' aria-label='' style={{ fontSize: 18, lineHeight: 1 }}>
+                                            🤖
+                                        </span>
+                                        <Localize i18n_default_text='Free Bots' />
+                                    </>
+                                }
+                                id='id-free-bots'
+                            >
+                                <Suspense fallback={<ChunkLoader message={localize('Please wait, loading bots...')} />}>
+                                    <FreeBots handleTabChange={handleTabChange} />
                                 </Suspense>
                             </div>
                             <div

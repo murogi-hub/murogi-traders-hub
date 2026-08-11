@@ -5,6 +5,8 @@ export interface Bot {
     name: string;
     description: string;
     image_url: string;
+    bot_file_url: string;
+    bot_file_name: string;
     display_order: number;
     is_active: boolean;
 }
