@@ -3,25 +3,42 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2.4rem;
+    gap: 1.6rem;
     width: 100%;
     height: 100%;
     min-height: 100vh;
     background: var(--brand-secondary, #070b14);
+    padding: 2.4rem 1.6rem;
+    box-sizing: border-box;
+}
+
+.brand-loader__card {
+    width: 100%;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 100%);
+    border: 1px solid rgba(45, 212, 255, 0.25);
+    border-radius: 1.8rem;
+    padding: 2.4rem 2rem 2rem;
+    box-shadow: 0 0 40px -12px rgba(45, 212, 255, 0.15);
 }
 
 .brand-loader__stage {
     position: relative;
-    width: 220px;
-    height: 220px;
+    width: 110px;
+    height: 110px;
+    margin-bottom: 1.2rem;
 }
 
 .brand-loader__logo {
     width: 100%;
     height: 100%;
     display: block;
-    border-radius: 16%;
-    filter: drop-shadow(0 0 30px rgba(255, 106, 77, 0.2));
+    border-radius: 20%;
+    filter: drop-shadow(0 0 24px rgba(255, 106, 77, 0.25));
 }
 
 .brand-loader__glow {
@@ -124,20 +141,244 @@
     }
 }
 
+.brand-loader__wordmark {
+    font-weight: 800;
+    font-size: 1.9rem;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.3rem;
+}
+
+.brand-loader__wordmark-a {
+    color: #2dd4ff;
+}
+
+.brand-loader__wordmark-b {
+    color: #ff6a4d;
+    margin-left: 0.5rem;
+}
+
+.brand-loader__subrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-bottom: 1.4rem;
+}
+
+.brand-loader__subrow-label {
+    font-family: 'IBM Plex Mono', 'Courier New', monospace;
+    font-size: 1rem;
+    letter-spacing: 0.18em;
+    color: #576081;
+}
+
+.brand-loader__live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #1fe6a8;
+    background: rgba(31, 230, 168, 0.12);
+    border: 1px solid rgba(31, 230, 168, 0.35);
+    border-radius: 999px;
+    padding: 0.2rem 0.8rem;
+}
+
+.brand-loader__live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #1fe6a8;
+    box-shadow: 0 0 6px #1fe6a8;
+}
+
+.brand-loader__rule {
+    width: 100%;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin: 0 0 1.4rem;
+}
+
+.brand-loader__welcome {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #eef2ff;
+    margin: 0 0 0.4rem;
+}
+
+.brand-loader__tagline {
+    font-size: 1.15rem;
+    color: #7c88ab;
+    margin: 0 0 1.6rem;
+}
+
+.brand-loader__progress-track {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    margin-bottom: 1.4rem;
+}
+
+.brand-loader__progress-fill {
+    height: 100%;
+    width: 30%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #2dd4ff, #ff6a4d);
+    animation: brand-progress 1.8s ease-in-out infinite;
+}
+
+@keyframes brand-progress {
+    0% {
+        transform: translateX(-100%);
+        width: 40%;
+    }
+    50% {
+        width: 60%;
+    }
+    100% {
+        transform: translateX(250%);
+        width: 40%;
+    }
+}
+
+.brand-loader__status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-bottom: 1.6rem;
+}
+
+.brand-loader__spinner {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgba(45, 212, 255, 0.25);
+    border-top-color: #2dd4ff;
+    animation: brand-spin 0.8s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes brand-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 .brand-loader__message {
     font-family: 'IBM Plex Mono', 'Courier New', monospace;
-    font-size: 1.2rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 1.1rem;
+    letter-spacing: 0.06em;
     color: #7c88ab;
+}
+
+.brand-loader__dots {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.brand-loader__pdot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #232c48;
+
+    &.is-active {
+        width: 18px;
+        border-radius: 3px;
+        background: #2dd4ff;
+    }
+}
+
+.brand-loader__features {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1.6rem;
+}
+
+.brand-loader__feature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.brand-loader__feature-icon {
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.brand-loader__feature-label {
+    font-size: 0.95rem;
+    color: #7c88ab;
+}
+
+.brand-loader__footer-tagline {
+    font-size: 1rem;
+    font-style: italic;
+    color: #576081;
+    margin: 0;
+}
+
+.brand-loader__ticker {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.6rem;
+    font-family: 'IBM Plex Mono', 'Courier New', monospace;
+    font-size: 0.95rem;
+    color: #7c88ab;
+}
+
+.brand-loader__ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand-loader__ticker-change {
+    font-weight: 700;
+
+    &.is-up {
+        color: #1fe6a8;
+    }
+
+    &.is-down {
+        color: #ff4757;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .brand-loader__dot--main,
     .brand-loader__dot--arm-h,
     .brand-loader__dot--arm-v,
-    .brand-loader__flash {
+    .brand-loader__flash,
+    .brand-loader__progress-fill,
+    .brand-loader__spinner {
         animation: none;
         opacity: 0;
+    }
+}
+
+@media (max-width: 380px) {
+    .brand-loader__features {
+        gap: 1.2rem;
+    }
+
+    .brand-loader__ticker {
+        gap: 1rem;
     }
 }
