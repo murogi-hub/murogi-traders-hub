@@ -1,9 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 
 const APP_ID = '340wutvNtAldWVNWazqCC';
-const WS_URL = `wss://ws.derivws.com/websockets/v3?app_id=${APP_ID}`;
+// Deriv has been migrating to a newer "Options Trading API" domain. Since this
+// runs from the browser with no login, and we can't verify live from this
+// environment which endpoint actually works, alternate between both on retry
+// so whichever one is currently correct gets used automatically.
+const WS_URLS = [
+    `wss://api.derivws.com/trading/v1/options/ws/public?app_id=${APP_ID}`,
+    `wss://ws.derivws.com/websockets/v3?app_id=${APP_ID}`,
+];
 const MAX_RETRY_DELAY_MS = 15000;
 const BASE_RETRY_DELAY_MS = 1000;
+const CONNECT_TIMEOUT_MS = 8000;
 
 export interface DigitStreamResult {
     /** Last digit of each tick's quote, oldest first, newest last. */
@@ -58,16 +66,27 @@ export function useDigitStream(symbol: string, maxTicks: number): DigitStreamRes
         function connect() {
             if (cancelled) return;
 
+            const url = WS_URLS[retryCount % WS_URLS.length];
+
             try {
-                ws = new WebSocket(WS_URL);
+                ws = new WebSocket(url);
             } catch {
                 setError('Could not open a connection. Retrying…');
                 scheduleReconnect();
                 return;
             }
 
+            // Some mobile networks silently drop the WebSocket handshake instead of
+            // erroring, which would otherwise leave us stuck on "Connecting…" forever.
+            const connectTimeout = setTimeout(() => {
+                if (cancelled || !ws || ws.readyState === WebSocket.OPEN) return;
+                setError('Connection timed out. Retrying…');
+                ws.close();
+            }, CONNECT_TIMEOUT_MS);
+
             ws.onopen = () => {
                 if (cancelled || !ws) return;
+                clearTimeout(connectTimeout);
                 setConnected(true);
                 setError(null);
                 retryCount = 0;
