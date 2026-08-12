@@ -94,8 +94,6 @@ const AdminPage = () => {
     const [bots, setBots] = useState<Bot[]>([]);
     const [formOpen, setFormOpen] = useState(false);
     const [botForm, setBotForm] = useState(emptyBotForm);
-    const [botImageFile, setBotImageFile] = useState<File | null>(null);
-    const [botImagePreview, setBotImagePreview] = useState('');
     const [botStrategyFile, setBotStrategyFile] = useState<File | null>(null);
     const [botFormError, setBotFormError] = useState('');
     const [savingBot, setSavingBot] = useState(false);
@@ -203,8 +201,6 @@ const AdminPage = () => {
 
     const openAddBot = () => {
         setBotForm(emptyBotForm);
-        setBotImageFile(null);
-        setBotImagePreview('');
         setBotStrategyFile(null);
         setBotFormError('');
         setFormOpen(true);
@@ -220,18 +216,9 @@ const AdminPage = () => {
             bot_file_name: bot.bot_file_name || '',
             is_active: bot.is_active,
         });
-        setBotImageFile(null);
-        setBotImagePreview(bot.image_url || '');
         setBotStrategyFile(null);
         setBotFormError('');
         setFormOpen(true);
-    };
-
-    const handleBotImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        setBotImageFile(file);
-        setBotImagePreview(URL.createObjectURL(file));
     };
 
     const handleBotStrategyFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -250,10 +237,7 @@ const AdminPage = () => {
         setSavingBot(true);
         setBotFormError('');
         try {
-            let imageUrl = botForm.image_url;
-            if (botImageFile) {
-                imageUrl = await uploadImage(botImageFile, 'bot-images');
-            }
+            const imageUrl = botForm.image_url;
             let botFileUrl = botForm.bot_file_url;
             let botFileName = botForm.bot_file_name;
             if (botStrategyFile) {
@@ -393,9 +377,6 @@ const AdminPage = () => {
                                 value={botForm.description}
                                 onChange={e => setBotForm(f => ({ ...f, description: e.target.value }))}
                             />
-                            <label>Picture</label>
-                            <input type='file' accept='image/*' onChange={handleBotImageChange} />
-                            {botImagePreview && <img className='twh-admin__img-preview' src={botImagePreview} alt='' />}
                             <label>Bot file (.xml strategy exported from Bot Builder)</label>
                             <input type='file' accept='.xml,text/xml' onChange={handleBotStrategyFileChange} />
                             {botForm.bot_file_name && (
