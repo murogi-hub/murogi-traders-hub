@@ -393,5 +393,31 @@
         // Header
         --header-background-mt5: #{constants.$color-blue-8};
         --header-background-others: #{constants.$color-green-7};
+
+        // --- Trade With Hunna: unify dark theme to navy blue site-wide ---
+        // (overrides the greyscale defaults above so header, tab bar, footer,
+        // and run-panel all match the Quick Actions panel's navy palette)
+        --general-main-1: #070b14;
+        --general-main-2: #0a0f1e;
+        --general-main-3: #0e1526;
+        --general-main-4: #131c33;
+        --general-section-1: #0a0f1e;
+        --general-section-2: #070b14;
+        --general-section-3: #0e1526;
+        --general-section-4: #0e1526;
+        --general-section-5: #0e1526;
+        --general-section-6: #131c33;
+        --general-hover: #131c33;
+        --general-active: #1a2540;
+        --state-normal: #0a0f1e;
+        --state-hover: #131c33;
+        --state-active: #1a2540;
+        --fill-normal: #0a0f1e;
+        --fill-normal-1: #0e1526;
+        --fill-hover: #131c33;
+        --border-normal: #1e2942;
+        --border-normal-1: #1e2942;
+        --border-normal-2: #1e2942;
+        --brand-secondary: #0a0f1e;
     }
 }
