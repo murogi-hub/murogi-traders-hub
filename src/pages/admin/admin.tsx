@@ -2,13 +2,23 @@ import { useCallback, useEffect, useState } from 'react';
 import { BACKEND_URL, Bot } from '../site-dashboard/backend-config';
 import './admin.scss';
 
-function fileToDataUrl(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = () => reject(new Error(`Could not read "${file.name}" from your device.`));
-        reader.readAsDataURL(file);
-    });
+async function fileToDataUrl(file: File): Promise<string> {
+    // file.arrayBuffer() is a plain promise-based read - more resilient than
+    // FileReader's event callbacks, which can silently fail under memory/
+    // resource pressure (e.g. many open tabs, low battery throttling).
+    try {
+        const buffer = await file.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
+        let binary = '';
+        const CHUNK_SIZE = 0x8000; // process in 32KB chunks to avoid call-stack limits
+        for (let i = 0; i < bytes.length; i += CHUNK_SIZE) {
+            binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK_SIZE));
+        }
+        const base64 = btoa(binary);
+        return `data:${file.type || 'application/octet-stream'};base64,${base64}`;
+    } catch {
+        throw new Error(`Could not read "${file.name}" from your device. Try closing other tabs or freeing up memory, then retry.`);
+    }
 }
 
 function toErrorMessage(err: unknown, fallback: string): string {
