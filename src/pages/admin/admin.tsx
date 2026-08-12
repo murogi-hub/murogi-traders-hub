@@ -6,9 +6,19 @@ function fileToDataUrl(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
+        reader.onerror = () => reject(new Error(`Could not read "${file.name}" from your device.`));
         reader.readAsDataURL(file);
     });
+}
+
+function toErrorMessage(err: unknown, fallback: string): string {
+    if (err instanceof Error) return err.message;
+    if (typeof err === 'string') return err;
+    try {
+        return `${fallback} (${JSON.stringify(err)})`;
+    } catch {
+        return fallback;
+    }
 }
 
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024; // 8MB - matches the backend's limit
@@ -174,7 +184,8 @@ const AdminPage = () => {
             setBrandingMsg('Saved.');
             setTimeout(() => setBrandingMsg(''), 2500);
         } catch (err) {
-            alert(err instanceof Error ? err.message : 'Could not save branding. Try again.');
+            console.error('[save branding] failed:', err);
+            alert(toErrorMessage(err, 'Could not save branding.'));
         } finally {
             setSavingBranding(false);
         }
@@ -264,7 +275,8 @@ const AdminPage = () => {
             setFormOpen(false);
             await loadBots();
         } catch (err) {
-            setBotFormError(err instanceof Error ? err.message : 'Could not save bot. Try again.');
+            console.error('[save bot] failed:', err);
+            setBotFormError(toErrorMessage(err, 'Could not save bot.'));
         } finally {
             setSavingBot(false);
         }
