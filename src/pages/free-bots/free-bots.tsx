@@ -33,28 +33,15 @@ const FreeBots = observer(({ handleTabChange }: TFreeBotsProps) => {
         try {
             const file_res = await fetch(bot.bot_file_url);
             if (!file_res.ok) {
-                throw new Error(localize('Could not download that bot\u2019s strategy file. Check your connection and try again.'));
+                throw new Error(
+                    localize('Could not download that bot\u2019s strategy file. Check your connection and try again.')
+                );
             }
             const block_string = await file_res.text();
 
-            // The Blockly workspace only exists once the Bot Builder tab has
-            // actually mounted - switching to it here first (rather than
-            // requiring the user to have visited it already) and then
-            // waiting briefly for it to initialize.
-            handleTabChange(DBOT_TABS.BOT_BUILDER);
-
-            let workspace = window.Blockly?.derivWorkspace;
-            const WORKSPACE_WAIT_MS = 6000;
-            const POLL_INTERVAL_MS = 150;
-            const deadline = Date.now() + WORKSPACE_WAIT_MS;
-            while (!workspace && Date.now() < deadline) {
-                await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL_MS));
-                workspace = window.Blockly?.derivWorkspace;
-            }
+            const workspace = window.Blockly?.derivWorkspace;
             if (!workspace) {
-                throw new Error(
-                    localize('The Bot Builder workspace took too long to load. Please try opening this bot again.')
-                );
+                throw new Error(localize('Bot Builder isn\u2019t ready yet. Please try again in a moment.'));
             }
 
             const result = await load({
@@ -70,6 +57,8 @@ const FreeBots = observer(({ handleTabChange }: TFreeBotsProps) => {
             if (result && (result as { error?: string }).error) {
                 throw new Error(localize('That bot file could not be loaded. It may be corrupted or out of date.'));
             }
+
+            handleTabChange(DBOT_TABS.BOT_BUILDER);
         } catch (err) {
             setLoadError(err instanceof Error ? err.message : localize('Couldn\u2019t open that bot. Please try again.'));
         } finally {
