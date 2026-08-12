@@ -1,9 +1,9 @@
 import { observer } from 'mobx-react-lite';
 import { useMemo } from 'react';
 import { DBOT_TABS } from '@/constants/bot-contents';
-import { useLogout } from '@/hooks/useLogout';
 import { useStore } from '@/hooks/useStore';
 import { localize } from '@deriv-com/translations';
+import { useDevice } from '@deriv-com/ui';
 import './quick-actions.scss';
 
 type TQuickAction = {
@@ -25,47 +25,58 @@ const QUOTES = [
 ];
 
 const QuickActions = observer(() => {
-    const { dashboard, client } = useStore();
+    const { dashboard, client, load_modal, quick_strategy } = useStore();
     const { setActiveTab } = dashboard;
-    const handleLogout = useLogout();
+    const { toggleLoadModal, setActiveTabIndex } = load_modal;
+    const { setFormVisibility } = quick_strategy;
+    const { isDesktop } = useDevice();
     const quote = useMemo(() => QUOTES[Math.floor(Math.random() * QUOTES.length)], []);
+
+    const openFileLoader = () => {
+        toggleLoadModal();
+        setActiveTabIndex(isDesktop ? 1 : 0);
+        setActiveTab(DBOT_TABS.BOT_BUILDER);
+    };
 
     const actions: TQuickAction[] = [
         {
-            id: 'bot-builder',
+            id: 'upload-bot',
             color: 'orange',
+            icon: '📁',
+            title: localize('Upload Bot'),
+            description: localize('Import an XML bot from your computer'),
+            cta: localize('Open'),
+            onClick: openFileLoader,
+        },
+        {
+            id: 'free-bots',
+            color: 'green',
             icon: '🤖',
-            title: localize('Bot Builder'),
-            description: localize('Build an automated trading strategy with drag-and-drop blocks.'),
+            title: localize('Free Bots'),
+            description: localize('Browse ready-made trading strategies'),
+            cta: localize('Open'),
+            onClick: () => setActiveTab(DBOT_TABS.FREE_BOTS),
+        },
+        {
+            id: 'bot-editor',
+            color: 'purple',
+            icon: '🧩',
+            title: localize('Bot Editor'),
+            description: localize('Build a custom bot with the visual editor'),
             cta: localize('Open'),
             onClick: () => setActiveTab(DBOT_TABS.BOT_BUILDER),
         },
         {
-            id: 'charts',
-            color: 'green',
-            icon: '📊',
-            title: localize('Charts'),
-            description: localize('Live price charts with technical indicators for your markets.'),
-            cta: localize('Open'),
-            onClick: () => setActiveTab(DBOT_TABS.CHART),
-        },
-        {
-            id: 'tutorials',
-            color: 'purple',
-            icon: '🎓',
-            title: localize('Tutorials'),
-            description: localize('New here? Walk through guided tutorials to get started fast.'),
-            cta: localize('Open'),
-            onClick: () => setActiveTab(DBOT_TABS.TUTORIAL),
-        },
-        {
-            id: 'logout',
+            id: 'quick-strategy',
             color: 'yellow',
-            icon: '🔒',
-            title: localize('Log out'),
-            description: localize('End your session on this device.'),
-            cta: localize('Log out'),
-            onClick: () => handleLogout(),
+            icon: '⚡',
+            title: localize('Quick Strategy'),
+            description: localize('Start fast with a pre-built strategy template'),
+            cta: localize('Open'),
+            onClick: () => {
+                setActiveTab(DBOT_TABS.BOT_BUILDER);
+                setFormVisibility(true);
+            },
         },
     ];
 
