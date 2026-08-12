@@ -10,12 +10,6 @@ type TFreeBotsProps = {
     handleTabChange: (tab: number) => void;
 };
 
-declare global {
-    interface Window {
-        Blockly?: { derivWorkspace?: unknown };
-    }
-}
-
 const FreeBots = observer(({ handleTabChange }: TFreeBotsProps) => {
     const [bots, setBots] = useState<Bot[] | null>(null);
     const [fetchError, setFetchError] = useState(false);

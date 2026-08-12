@@ -166,6 +166,56 @@ const CoreStoreProvider: React.FC<{ children: React.ReactNode }> = observer(({ c
         };
     }, [connectionStatus, handleMessages, isAuthorizing, isAuthorized, client]);
 
+    // Safety net: the balance is meant to stay live via the WebSocket
+    // subscription in handleMessages above, but if that push ever gets missed
+    // (network hiccup, a reconnect that doesn't replay the last message, etc.)
+    // there's otherwise no way for a stale balance to self-correct. Re-fetch
+    // directly on a short interval as a backstop - cheap, and guarantees the
+    // displayed balance is never more than ~15s out of date regardless of the
+    // push mechanism's state.
+    const balancePollInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+
+    useEffect(() => {
+        const pollBalance = async () => {
+            if (!api_base?.api || !client) return;
+            try {
+                // TApiBaseApi's declared type is missing `balance` (a pre-existing gap -
+                // the exact same call is already used, with the same cast-free error
+                // tolerated, in api-base.ts's authorizeAndSubscribe). Narrow-casting
+                // here rather than widening the shared type, since doing that cascaded
+                // into unrelated type errors elsewhere that rely on its current shape.
+                const apiWithBalance = api_base.api as unknown as {
+                    balance: () => Promise<{
+                        balance?: { balance?: number; currency?: string };
+                        error?: unknown;
+                    }>;
+                };
+                const { balance, error } = await apiWithBalance.balance();
+                if (!error && balance && typeof balance.balance === 'number') {
+                    client.setBalance(balance.balance.toString());
+                    if (balance.currency) {
+                        client.setCurrency(balance.currency);
+                    }
+                }
+            } catch {
+                // Silent - this is a background refresh, the push subscription
+                // is still the primary mechanism and errors here shouldn't
+                // surface to the user.
+            }
+        };
+
+        if (isAuthorized && client) {
+            balancePollInterval.current = setInterval(pollBalance, 15000);
+        }
+
+        return () => {
+            if (balancePollInterval.current) {
+                clearInterval(balancePollInterval.current);
+                balancePollInterval.current = null;
+            }
+        };
+    }, [isAuthorized, client]);
+
     useEffect(() => {
         if (!isAuthorizing && isAuthorized && !accountInitialization.current && client) {
             accountInitialization.current = true;
