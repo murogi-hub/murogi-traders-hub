@@ -25,7 +25,7 @@ interface ISaveModalStore {
     button_status: { [key: string]: string } | number;
     bot_name: { [key: string]: string } | string;
     toggleSaveModal: () => void;
-    validateBotName: (values: string) => { [key: string]: string };
+    validateBotName: (values: { bot_name?: string }) => { [key: string]: string };
     onConfirmSave: ({ is_local, save_as_collection, bot_name }: IOnConfirmProps) => void;
     updateBotName: (bot_name: string) => void;
     setButtonStatus: (status: { [key: string]: string } | string | number) => void;
@@ -63,10 +63,10 @@ export default class SaveModalStore implements ISaveModalStore {
         this.is_save_modal_open = !this.is_save_modal_open;
     };
 
-    validateBotName = (values: string): { [key: string]: string } => {
-        const errors = {};
+    validateBotName = (values: { bot_name?: string }): { [key: string]: string } => {
+        const errors: { [key: string]: string } = {};
 
-        if (values.bot_name.trim() === '') {
+        if (!values?.bot_name || values.bot_name.trim() === '') {
             errors.bot_name = localize('Strategy name cannot be empty');
         }
 

@@ -35,7 +35,7 @@ type TSaveModalForm = {
     onConfirmSave: (values: { is_local: boolean; save_as_collection: boolean; bot_name: string }) => void;
     setCurrentFocus: (current_focus: string) => void;
     toggleSaveModal: () => void;
-    validateBotName: (values: string) => { [key: string]: string };
+    validateBotName: (values: { bot_name?: string }) => { [key: string]: string };
 };
 
 const SaveModalForm: React.FC<TSaveModalForm> = ({

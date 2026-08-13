@@ -350,11 +350,11 @@ export default class BlockConversion {
             const el_field = xml.querySelector(`field[name="${field_name}"]`);
 
             if (el_field) {
-                const value = el_field.innerText;
+                const value = el_field.textContent;
 
                 Object.keys(renamed_fields[field_name]).forEach(old_name => {
                     if (value === old_name) {
-                        el_field.innerText = renamed_fields[field_name][old_name];
+                        el_field.textContent = renamed_fields[field_name][old_name];
                     }
                 });
             }
@@ -623,7 +623,7 @@ export default class BlockConversion {
                     if (field) {
                         if (field instanceof window.Blockly.FieldVariable) {
                             const variable_id = el_block_child.getAttribute('id');
-                            const variable_name = el_block_child.innerText.trim();
+                            const variable_name = (el_block_child.textContent || '').trim();
                             const variable = window.Blockly.Variables.getOrCreateVariablePackage(
                                 this.workspace,
                                 variable_id,
@@ -633,7 +633,7 @@ export default class BlockConversion {
                             this.workspace_variables[variable.id_] = variable_name;
                             field.setValue(variable.id_);
                         } else {
-                            field.setValue(el_block_child.innerText);
+                            field.setValue(el_block_child.textContent);
                         }
                     }
                     break;
