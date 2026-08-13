@@ -82,7 +82,7 @@ const FreeBots = observer(({ handleTabChange }: TFreeBotsProps) => {
             )}
             {loadError && <div className='free-bots__error'>{loadError}</div>}
 
-            <div className='free-bots__grid'>
+            <div className='free-bots__list'>
                 {bots?.map(bot => (
                     <button
                         key={bot.id}
@@ -96,8 +96,10 @@ const FreeBots = observer(({ handleTabChange }: TFreeBotsProps) => {
                         ) : (
                             <div className='free-bots__pic free-bots__pic--fallback'>🤖</div>
                         )}
-                        <span className='free-bots__name'>{bot.name}</span>
-                        {bot.description && <span className='free-bots__desc'>{bot.description}</span>}
+                        <div className='free-bots__info'>
+                            <span className='free-bots__name'>{bot.name}</span>
+                            {bot.description && <span className='free-bots__desc'>{bot.description}</span>}
+                        </div>
                         <span className='free-bots__open'>
                             {loadingId === bot.id ? localize('Loading\u2026') : localize('Open \u2192')}
                         </span>

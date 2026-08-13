@@ -80,7 +80,7 @@ const AppWrapper = observer(() => {
     const { clear } = summary_card;
     const { DASHBOARD, BOT_BUILDER } = DBOT_TABS;
     const init_render = React.useRef(true);
-    const hash = ['dashboard', 'bot_builder', 'chart', 'free_bots', 'tutorial', 'd_circles'];
+    const hash = ['dashboard', 'bot_builder', 'chart', 'free_bots', 'd_circles', 'tutorial'];
     const { isDesktop } = useDevice();
     const location = useLocation();
     const navigate = useNavigate();
@@ -445,6 +445,23 @@ const AppWrapper = observer(() => {
                             <div
                                 label={
                                     <>
+                                        <LabelPairedGaugeMaxCaptionRegularIcon
+                                            height='24px'
+                                            width='24px'
+                                            fill='var(--text-general)'
+                                        />
+                                        <Localize i18n_default_text='Analysis Tool' />
+                                    </>
+                                }
+                                id='id-d-circles'
+                            >
+                                <Suspense fallback={<ChunkLoader message={localize('Loading...')} />}>
+                                    <DCircles />
+                                </Suspense>
+                            </div>
+                            <div
+                                label={
+                                    <>
                                         <LegacyGuide1pxIcon
                                             height='16px'
                                             width='16px'
@@ -465,23 +482,6 @@ const AppWrapper = observer(() => {
                                         <Tutorial handleTabChange={handleTabChange} />
                                     </Suspense>
                                 </div>
-                            </div>
-                            <div
-                                label={
-                                    <>
-                                        <LabelPairedGaugeMaxCaptionRegularIcon
-                                            height='24px'
-                                            width='24px'
-                                            fill='var(--text-general)'
-                                        />
-                                        <Localize i18n_default_text='D-Circles' />
-                                    </>
-                                }
-                                id='id-d-circles'
-                            >
-                                <Suspense fallback={<ChunkLoader message={localize('Loading...')} />}>
-                                    <DCircles />
-                                </Suspense>
                             </div>
                         </Tabs>
                         {!isDesktop && right_tab_shadow && <span className='tabs-shadow tabs-shadow--right' />}{' '}
