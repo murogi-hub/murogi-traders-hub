@@ -12,6 +12,20 @@
         width: 100vw;
     }
 
+    // Without this, a grid row sized with 1fr still defaults to
+    // min-height: auto, which means it grows to fit whatever tall content is
+    // inside it rather than staying bounded to the row's allocated space.
+    // That silently breaks any tab panel's own `overflow-y: auto` - the
+    // panel never gets a fixed box to scroll within, so its content just
+    // gets pushed past the viewport and clipped by an ancestor's
+    // `overflow: hidden` with no way to scroll to it at all. Deliberately
+    // NOT adding overflow:hidden here too - some tabs (Bot Builder) have
+    // floating panels/dialogs that may rely on this shared container not
+    // clipping them; each tab already manages its own internal scrolling.
+    &__content {
+        min-height: 0;
+    }
+
     &__list {
         width: 100%;
         line-height: 38px;
