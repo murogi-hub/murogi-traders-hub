@@ -84,26 +84,26 @@ const FreeBots = observer(({ handleTabChange }: TFreeBotsProps) => {
 
             <div className='free-bots__list'>
                 {bots?.map(bot => (
-                    <button
-                        key={bot.id}
-                        type='button'
-                        className='free-bots__card'
-                        onClick={() => openBot(bot)}
-                        disabled={loadingId === bot.id}
-                    >
-                        {bot.image_url ? (
-                            <img src={bot.image_url} alt={bot.name} className='free-bots__pic' />
-                        ) : (
-                            <div className='free-bots__pic free-bots__pic--fallback'>🤖</div>
-                        )}
-                        <div className='free-bots__info'>
+                    <div key={bot.id} className='free-bots__card'>
+                        <div className='free-bots__card-top'>
+                            {bot.image_url ? (
+                                <img src={bot.image_url} alt={bot.name} className='free-bots__icon' />
+                            ) : (
+                                <div className='free-bots__icon free-bots__icon--fallback'>&#9889;</div>
+                            )}
                             <span className='free-bots__name'>{bot.name}</span>
-                            {bot.description && <span className='free-bots__desc'>{bot.description}</span>}
                         </div>
-                        <span className='free-bots__open'>
-                            {loadingId === bot.id ? localize('Loading\u2026') : localize('Open \u2192')}
-                        </span>
-                    </button>
+                        {bot.description && <p className='free-bots__desc'>{bot.description}</p>}
+                        <button
+                            type='button'
+                            className='free-bots__run-btn'
+                            onClick={() => openBot(bot)}
+                            disabled={loadingId === bot.id}
+                        >
+                            <span className='free-bots__run-icon'>&#9889;</span>
+                            {loadingId === bot.id ? localize('Loading\u2026') : localize('Run Bot')}
+                        </button>
+                    </div>
                 ))}
             </div>
         </div>
