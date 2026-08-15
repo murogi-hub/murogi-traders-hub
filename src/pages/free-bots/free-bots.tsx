@@ -23,6 +23,25 @@ const FreeBots = observer(({ handleTabChange }: TFreeBotsProps) => {
             .catch(() => setFetchError(true));
     }, []);
 
+    const waitForWorkspace = (timeout_ms = 6000): Promise<any> => {
+        return new Promise(resolve => {
+            const started = Date.now();
+            const check = () => {
+                const workspace = window.Blockly?.derivWorkspace;
+                if (workspace) {
+                    resolve(workspace);
+                    return;
+                }
+                if (Date.now() - started > timeout_ms) {
+                    resolve(null);
+                    return;
+                }
+                setTimeout(check, 150);
+            };
+            check();
+        });
+    };
+
     const openBot = async (bot: Bot) => {
         if (!bot.bot_file_url) {
             setLoadError(localize('This bot doesn\u2019t have a strategy file attached yet.'));
@@ -39,7 +58,12 @@ const FreeBots = observer(({ handleTabChange }: TFreeBotsProps) => {
             }
             const block_string = await file_res.text();
 
-            const workspace = window.Blockly?.derivWorkspace;
+            // Bot Builder's Blockly workspace only exists once that tab has
+            // mounted at least once. Switch to it first (this is usually
+            // people's first click, so it's very likely not mounted yet),
+            // then wait for the workspace instead of failing immediately.
+            handleTabChange(DBOT_TABS.BOT_BUILDER);
+            const workspace = await waitForWorkspace();
             if (!workspace) {
                 throw new Error(localize('Bot Builder isn\u2019t ready yet. Please try again in a moment.'));
             }
@@ -57,8 +81,6 @@ const FreeBots = observer(({ handleTabChange }: TFreeBotsProps) => {
             if (result && (result as { error?: string }).error) {
                 throw new Error(localize('That bot file could not be loaded. It may be corrupted or out of date.'));
             }
-
-            handleTabChange(DBOT_TABS.BOT_BUILDER);
         } catch (err) {
             setLoadError(err instanceof Error ? err.message : localize('Couldn\u2019t open that bot. Please try again.'));
         } finally {
@@ -94,15 +116,21 @@ const FreeBots = observer(({ handleTabChange }: TFreeBotsProps) => {
                             <span className='free-bots__name'>{bot.name}</span>
                         </div>
                         {bot.description && <p className='free-bots__desc'>{bot.description}</p>}
-                        <button
-                            type='button'
-                            className='free-bots__run-btn'
-                            onClick={() => openBot(bot)}
-                            disabled={loadingId === bot.id}
-                        >
-                            <span className='free-bots__run-icon'>&#9889;</span>
-                            {loadingId === bot.id ? localize('Loading\u2026') : localize('Run Bot')}
-                        </button>
+                        {bot.bot_file_url ? (
+                            <button
+                                type='button'
+                                className='free-bots__run-btn'
+                                onClick={() => openBot(bot)}
+                                disabled={loadingId === bot.id}
+                            >
+                                <span className='free-bots__run-icon'>&#9889;</span>
+                                {loadingId === bot.id ? localize('Loading\u2026') : localize('Run Bot')}
+                            </button>
+                        ) : (
+                            <button type='button' className='free-bots__run-btn free-bots__run-btn--disabled' disabled>
+                                {localize('Coming soon')}
+                            </button>
+                        )}
                     </div>
                 ))}
             </div>

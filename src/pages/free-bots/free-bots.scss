@@ -119,6 +119,12 @@
             opacity: 0.6;
             cursor: default;
         }
+
+        &--disabled {
+            background: rgba(139, 146, 184, 0.08);
+            border: 1px solid rgba(139, 146, 184, 0.35);
+            color: #8b92b8;
+        }
     }
 
     &__run-icon {
