@@ -23,25 +23,6 @@ const FreeBots = observer(({ handleTabChange }: TFreeBotsProps) => {
             .catch(() => setFetchError(true));
     }, []);
 
-    const waitForWorkspace = (timeout_ms = 6000): Promise<any> => {
-        return new Promise(resolve => {
-            const started = Date.now();
-            const check = () => {
-                const workspace = window.Blockly?.derivWorkspace;
-                if (workspace) {
-                    resolve(workspace);
-                    return;
-                }
-                if (Date.now() - started > timeout_ms) {
-                    resolve(null);
-                    return;
-                }
-                setTimeout(check, 150);
-            };
-            check();
-        });
-    };
-
     const openBot = async (bot: Bot) => {
         if (!bot.bot_file_url) {
             setLoadError(localize('This bot doesn\u2019t have a strategy file attached yet.'));
@@ -58,12 +39,15 @@ const FreeBots = observer(({ handleTabChange }: TFreeBotsProps) => {
             }
             const block_string = await file_res.text();
 
-            // Bot Builder's Blockly workspace only exists once that tab has
-            // mounted at least once. Switch to it first (this is usually
-            // people's first click, so it's very likely not mounted yet),
-            // then wait for the workspace instead of failing immediately.
-            handleTabChange(DBOT_TABS.BOT_BUILDER);
-            const workspace = await waitForWorkspace();
+            // IMPORTANT: do not call handleTabChange(BOT_BUILDER) before this.
+            // The already-working Upload Bot flow (load-modal-store.ts) reads
+            // window.Blockly.derivWorkspace directly with no wait/poll at
+            // all, which confirms the workspace is already mounted early
+            // regardless of which tab is currently showing. Switching tabs
+            // here first (tried once before) causes the load to run against
+            // a component mid-unmount/remount and gets stuck loading forever
+            // - switch AFTER a successful load instead, same as Upload Bot.
+            const workspace = window.Blockly?.derivWorkspace;
             if (!workspace) {
                 throw new Error(localize('Bot Builder isn\u2019t ready yet. Please try again in a moment.'));
             }
@@ -81,6 +65,8 @@ const FreeBots = observer(({ handleTabChange }: TFreeBotsProps) => {
             if (result && (result as { error?: string }).error) {
                 throw new Error(localize('That bot file could not be loaded. It may be corrupted or out of date.'));
             }
+
+            handleTabChange(DBOT_TABS.BOT_BUILDER);
         } catch (err) {
             setLoadError(err instanceof Error ? err.message : localize('Couldn\u2019t open that bot. Please try again.'));
         } finally {
