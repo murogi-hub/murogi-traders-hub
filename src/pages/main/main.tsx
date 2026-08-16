@@ -462,6 +462,30 @@ const AppWrapper = observer(() => {
                             <div
                                 label={
                                     <>
+                                        <span role='img' aria-label='' style={{ fontSize: 18, lineHeight: 1 }}>
+                                            🔄
+                                        </span>
+                                        <Localize i18n_default_text='Copy Trading' />
+                                        <span className='dbot-tab__soon-badge'>
+                                            <Localize i18n_default_text='Soon' />
+                                        </span>
+                                    </>
+                                }
+                                id='id-copy-trading'
+                            >
+                                <div className='dbot-tab__coming-soon'>
+                                    <span className='dbot-tab__coming-soon-icon'>🔄</span>
+                                    <h3>
+                                        <Localize i18n_default_text='Copy Trading is coming soon' />
+                                    </h3>
+                                    <p>
+                                        <Localize i18n_default_text="We're working on letting you follow other traders' strategies automatically. Check back soon." />
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                label={
+                                    <>
                                         <LegacyGuide1pxIcon
                                             height='16px'
                                             width='16px'
