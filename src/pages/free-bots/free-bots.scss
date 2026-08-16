@@ -1,8 +1,11 @@
 .free-bots {
     padding: 1.6rem;
-    height: 100%;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    // Deliberately NOT setting height/overflow here anymore. The shared
+    // .dc-tabs__content parent (tabs.scss) now handles scrolling for every
+    // tab - having this element ALSO set its own height:100%+overflow-y:auto
+    // created two nested scroll containers fighting each other, which is a
+    // classic cause of scroll getting stuck partway on mobile. Just flow
+    // naturally within the parent's scroll area instead.
 
     &__header {
         margin-bottom: 1.6rem;
@@ -41,7 +44,14 @@
         display: flex;
         flex-direction: column;
         gap: 1.2rem;
-        padding-bottom: 2rem;
+        // The app's footer (Run bar) is position:fixed at the bottom of the
+        // viewport and its height varies by context (roughly 4.2rem-8.8rem
+        // elsewhere in the app). Without enough bottom padding here, the
+        // last card in the list sits underneath it and is unreachable no
+        // matter how the scroll container itself is configured - generous
+        // padding here, well past the largest observed footer height, so
+        // the last bot is always fully visible above it.
+        padding-bottom: 12rem;
     }
 
     &__card {

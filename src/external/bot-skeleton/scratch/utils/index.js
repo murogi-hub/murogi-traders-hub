@@ -136,6 +136,42 @@ export const save = (filename = '@deriv/bot', collection = false, xmlDom) => {
 
 const delayExecution = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+/**
+ * Repairs a specific, observed XML corruption pattern where the
+ * after_purchase / before_purchase wrapper block lost its `type` (and `id`)
+ * attribute somewhere in an export/round-trip process, leaving a bare
+ * `<block><statement name="AFTERPURCHASE_STACK">...` with no way to know
+ * what kind of block it's supposed to be. Blockly can't create a block with
+ * a null type, so strategies with this corruption fail to load entirely -
+ * even though every other part of the file is perfectly valid.
+ *
+ * Only repairs the exact, unambiguous case (a typeless block whose direct
+ * child is a statement named AFTERPURCHASE_STACK or BEFOREPURCHASE_STACK,
+ * which only after_purchase/before_purchase blocks ever have) - anything
+ * less certain is deliberately left alone rather than guessed at.
+ */
+const repairMissingPurchaseBlockTypes = xml => {
+    const STACK_NAME_TO_TYPE = {
+        AFTERPURCHASE_STACK: 'after_purchase',
+        BEFOREPURCHASE_STACK: 'before_purchase',
+    };
+    let repair_count = 0;
+
+    Array.from(xml.querySelectorAll('block')).forEach(block => {
+        if (block.getAttribute('type')) return;
+
+        const statement = Array.from(block.children).find(child => child.tagName === 'statement');
+        const block_type = statement && STACK_NAME_TO_TYPE[statement.getAttribute('name')];
+        if (!block_type) return;
+
+        block.setAttribute('type', block_type);
+        if (!block.getAttribute('id')) {
+            repair_count += 1;
+            block.setAttribute('id', `repaired_${block_type}_${Date.now()}_${repair_count}`);
+        }
+    });
+};
+
 export const load = async ({
     block_string,
     drop_event,
@@ -183,6 +219,9 @@ export const load = async ({
     } catch (e) {
         return showInvalidStrategyError();
     }
+
+    repairMissingPurchaseBlockTypes(xml);
+
     const blockConversion = new BlockConversion();
     xml = blockConversion.convertStrategy(xml, showIncompatibleStrategyDialog);
     const blockly_xml = xml.querySelectorAll('block');
