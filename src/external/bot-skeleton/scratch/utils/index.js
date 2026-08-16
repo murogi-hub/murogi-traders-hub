@@ -172,6 +172,41 @@ const repairMissingPurchaseBlockTypes = xml => {
     });
 };
 
+/**
+ * Some uploaded strategies use block type names from a different
+ * bot-builder fork/version that are functionally identical to blocks that
+ * DO exist here, just renamed. Each mapping below was individually verified
+ * by comparing the field structure the renamed block expects against what
+ * the source XML actually provides - only exact, confirmed-safe matches are
+ * included. Anything without a confirmed-safe match (e.g. last_digits_condition,
+ * which has no equivalent block here at all) is deliberately left alone -
+ * the existing has_invalid_blocks check further down already surfaces a
+ * clear 'XML file contains unsupported elements' message for those, rather
+ * than risking a silent, potentially-wrong substitution.
+ */
+const repairKnownBlockTypeAliases = xml => {
+    // Simple 1:1 type renames with no field differences.
+    const TYPE_ALIASES = {
+        apollo_purchase: 'purchase', // fields: PURCHASE_LIST etc. - identical
+        last_digits: 'last_digit', // no fields on either - identical
+    };
+    Object.entries(TYPE_ALIASES).forEach(([old_type, new_type]) => {
+        xml.querySelectorAll(`block[type="${old_type}"]`).forEach(block => {
+            block.setAttribute('type', new_type);
+        });
+    });
+
+    // contract_result -> contract_check_result also needs its field renamed
+    // (RESULT -> CHECK_RESULT); values ('win'/'loss') are identical.
+    xml.querySelectorAll('block[type="contract_result"]').forEach(block => {
+        block.setAttribute('type', 'contract_check_result');
+        const field = Array.from(block.children).find(
+            child => child.tagName === 'field' && child.getAttribute('name') === 'RESULT'
+        );
+        if (field) field.setAttribute('name', 'CHECK_RESULT');
+    });
+};
+
 export const load = async ({
     block_string,
     drop_event,
@@ -221,6 +256,7 @@ export const load = async ({
     }
 
     repairMissingPurchaseBlockTypes(xml);
+    repairKnownBlockTypeAliases(xml);
 
     const blockConversion = new BlockConversion();
     xml = blockConversion.convertStrategy(xml, showIncompatibleStrategyDialog);
