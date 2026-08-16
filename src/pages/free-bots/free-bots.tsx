@@ -75,7 +75,14 @@ const FreeBots = observer(({ handleTabChange }: TFreeBotsProps) => {
     };
 
     return (
-        <div className='free-bots'>
+        <div
+            className='free-bots'
+            style={{
+                maxHeight: 'calc(100vh - 8rem)',
+                overflowY: 'scroll',
+                WebkitOverflowScrolling: 'touch',
+            }}
+        >
             <div className='free-bots__header'>
                 <h3 className='free-bots__title'>{localize('Free Bots')}</h3>
                 <p className='free-bots__hint'>
