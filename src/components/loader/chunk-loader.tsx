@@ -19,7 +19,7 @@ export default function ChunkLoader({ message }: { message: string }) {
         <div className='brand-loader'>
             <div className='brand-loader__card'>
                 <div className='brand-loader__stage'>
-                    <img src='/assets/branding/logo.png' alt='Trade With Hunna' className='brand-loader__logo' />
+                    <img src='/assets/branding/logo-v2.png' alt='Trade With Hunna' className='brand-loader__logo' />
                     <svg className='brand-loader__glow' viewBox='0 0 1024 1024' aria-hidden='true'>
                         <circle className='brand-loader__dot brand-loader__dot--main' r='9' fill='#fff' />
                         <circle className='brand-loader__dot brand-loader__dot--arm-h' r='6' fill='#fff' />

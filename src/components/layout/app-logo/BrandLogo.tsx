@@ -23,7 +23,7 @@ export const BrandLogo = ({ width, height = 32, className = '', showText }: TBra
             style={{ display: 'inline-flex', alignItems: 'center', gap: '0.8rem', lineHeight: 1 }}
         >
             <img
-                src='/assets/branding/logo-mark.png'
+                src='/assets/branding/logo-mark-v2.png'
                 alt={logo_config.alt_text}
                 width={computed_width}
                 height={height}

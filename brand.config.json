@@ -62,8 +62,8 @@
         "logo": {
             "type": "image",
             "component_name": "BrandLogo",
-            "image_path": "/assets/branding/logo-mark.png",
-            "full_image_path": "/assets/branding/logo.png",
+            "image_path": "/assets/branding/logo-mark-v2.png",
+            "full_image_path": "/assets/branding/logo-v2.png",
             "alt_text": "Trade With Hunna",
             "link_url": "/",
             "show_text": true,
