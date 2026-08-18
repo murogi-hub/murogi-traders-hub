@@ -216,6 +216,33 @@ const CoreStoreProvider: React.FC<{ children: React.ReactNode }> = observer(({ c
         };
     }, [isAuthorized, client]);
 
+    // Session tracking (for the admin "Active Sessions" panel): the actual
+    // start/end of a session is already recorded server-side automatically
+    // (on OAuth /callback and on /logout), using the login cookie rather
+    // than anything the client sends - reliable even if this component never
+    // mounts. The one thing that genuinely needs to happen client-side is
+    // the periodic heartbeat, so a session that never hits /logout (tab
+    // closed, browser crash) can still be recognized as gone stale via
+    // last_seen_at rather than looking permanently "active" forever.
+    useEffect(() => {
+        if (!isAuthorized || !client?.loginid) return undefined;
+
+        const sendHeartbeat = () => {
+            fetch('https://trade-with-hunna-backend.onrender.com/api/session/heartbeat', {
+                method: 'POST',
+                credentials: 'include',
+            }).catch(() => {
+                // Best-effort - session tracking failing shouldn't affect the
+                // user's actual session/trading experience.
+            });
+        };
+
+        sendHeartbeat();
+        const heartbeat_interval = setInterval(sendHeartbeat, 60000);
+
+        return () => clearInterval(heartbeat_interval);
+    }, [isAuthorized, client?.loginid]);
+
     useEffect(() => {
         if (!isAuthorizing && isAuthorized && !accountInitialization.current && client) {
             accountInitialization.current = true;

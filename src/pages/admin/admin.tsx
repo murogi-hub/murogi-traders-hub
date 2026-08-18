@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { BACKEND_URL, Bot } from '../site-dashboard/backend-config';
+import { BACKEND_URL, Bot, UserSession } from '../site-dashboard/backend-config';
 import './admin.scss';
 
 async function fileToDataUrl(file: File): Promise<string> {
@@ -98,6 +98,8 @@ const AdminPage = () => {
     const [botFormError, setBotFormError] = useState('');
     const [savingBot, setSavingBot] = useState(false);
 
+    const [sessions, setSessions] = useState<UserSession[]>([]);
+
     const checkAdmin = useCallback(async () => {
         const res = await fetch(`${BACKEND_URL}/api/admin/check`, { credentials: 'include' });
         const data = await res.json();
@@ -120,14 +122,21 @@ const AdminPage = () => {
         setBots(Array.isArray(data) ? data : []);
     }, []);
 
+    const loadSessions = useCallback(async () => {
+        const res = await fetch(`${BACKEND_URL}/api/admin/sessions`, { credentials: 'include' });
+        const data = await res.json();
+        setSessions(Array.isArray(data) ? data : []);
+    }, []);
+
     const refreshAppState = useCallback(async () => {
         const admin = await checkAdmin();
         setIsAdmin(admin);
         if (admin) {
             loadBranding();
             loadBots();
+            loadSessions();
         }
-    }, [checkAdmin, loadBranding, loadBots]);
+    }, [checkAdmin, loadBranding, loadBots, loadSessions]);
 
     useEffect(() => {
         refreshAppState().finally(() => setChecking(false));
@@ -436,6 +445,53 @@ const AdminPage = () => {
                             </div>
                         ))}
                     </div>
+                </section>
+
+                <section>
+                    <h2>Active Sessions</h2>
+                    <p className='twh-admin__hint'>
+                        One row per user (their most recent login). Active = used the site in the last 2 minutes.
+                        Idle = logged in but quiet longer than that. Ended = logged out.
+                    </p>
+                    <div className='twh-admin__sessions-list'>
+                        {sessions.length === 0 && <p className='twh-admin__hint'>No sessions recorded yet.</p>}
+                        {sessions.length > 0 && (
+                            <table className='twh-admin__sessions-table'>
+                                <thead>
+                                    <tr>
+                                        <th>Login ID</th>
+                                        <th>Status</th>
+                                        <th>Started</th>
+                                        <th>Last seen</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {sessions.map(s => {
+                                        const status = s.status || (s.ended_at ? 'ended' : 'idle');
+                                        return (
+                                            <tr key={s.login_id}>
+                                                <td>{s.login_id}</td>
+                                                <td>
+                                                    <span className={`twh-admin__session-badge is-${status}`}>
+                                                        {status === 'active'
+                                                            ? 'Active'
+                                                            : status === 'ended'
+                                                              ? 'Ended'
+                                                              : 'Idle'}
+                                                    </span>
+                                                </td>
+                                                <td>{new Date(s.started_at).toLocaleString()}</td>
+                                                <td>{new Date(s.last_seen_at).toLocaleString()}</td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        )}
+                    </div>
+                    <button className='twh-btn twh-btn--secondary' onClick={loadSessions}>
+                        Refresh
+                    </button>
                 </section>
             </main>
         </div>
