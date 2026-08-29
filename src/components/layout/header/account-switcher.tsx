@@ -49,9 +49,25 @@ const AccountSwitcher = observer(({ activeAccount }: TAccountSwitcher) => {
                 if (response?.error) {
                     throw new Error(response.error.message || localize('Could not reload demo balance.'));
                 }
-                // The balance push subscription (already active) will update the
-                // displayed figure automatically once Deriv processes the top-up -
-                // no need to manually refetch here.
+
+                // Don't just wait passively on the balance push subscription to
+                // reflect the top-up - actively refetch right away so the
+                // displayed number updates immediately instead of depending on
+                // a push message that may be delayed or (per earlier findings
+                // in this app) not fire reliably.
+                const balanceApi = api_base.api as unknown as {
+                    balance: () => Promise<{
+                        balance?: { balance?: number; currency?: string };
+                        error?: unknown;
+                    }>;
+                };
+                const balance_res = await balanceApi.balance();
+                if (!balance_res?.error && balance_res?.balance && typeof balance_res.balance.balance === 'number') {
+                    client?.setBalance(balance_res.balance.balance.toString());
+                    if (balance_res.balance.currency) {
+                        client?.setCurrency(balance_res.balance.currency);
+                    }
+                }
             } catch (err) {
                 setReloadError(err instanceof Error ? err.message : localize('Could not reload demo balance.'));
                 setTimeout(() => setReloadError(''), 4000);
