@@ -154,9 +154,9 @@ const AccountSwitcher = observer(({ activeAccount }: TAccountSwitcher) => {
                         <div className='acc-info__account-type-header'>
                             <Text as='p' size='xs' className='acc-info__account-type'>
                                 {isVirtual ? (
-                                    <Localize i18n_default_text='Demo account' />
-                                ) : (
                                     <Localize i18n_default_text='Real account' />
+                                ) : (
+                                    <Localize i18n_default_text='Dem account' />
                                 )}
                             </Text>
                             {showChevron && (
