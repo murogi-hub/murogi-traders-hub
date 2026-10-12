@@ -40,7 +40,7 @@ const SiteDashboard = () => {
                     ) : (
                         <span className='twh-dashboard__glyph'>⚡</span>
                     )}
-                    <span>Trade With Hunna</span>
+                    <span>Murogi Trading Hub</span>
                 </div>
             </div>
 
@@ -92,7 +92,7 @@ const SiteDashboard = () => {
             </main>
 
             <footer className='twh-dashboard__footer'>
-                Trade With Hunna &middot; Powered by the Deriv API &middot; <Link to='/admin'>Admin</Link>
+                Murogi Trading Hub &middot; Powered by the Deriv API &middot; <Link to='/admin'>Admin</Link>
             </footer>
         </div>
     );

@@ -1,4 +1,4 @@
-// Trade With Hunna brand mark (raster logo, see /public/assets/branding)
+// Murogi Trading Hub brand mark (raster logo, see /public/assets/branding)
 import brandConfig from '@/../brand.config.json';
 
 type TBrandLogoProps = {
@@ -7,15 +7,15 @@ type TBrandLogoProps = {
     /** Unused for the raster mark; kept so existing width/height-only call sites keep compiling */
     fill?: string;
     className?: string;
-    /** Show the "Hunna Bot" wordmark next to the icon mark */
+    /** Show the "Murogi Bot" wordmark next to the icon mark */
     showText?: boolean;
 };
 
 export const BrandLogo = ({ width, height = 32, className = '', showText }: TBrandLogoProps) => {
     const logo_config = brandConfig.platform.logo;
     const should_show_text = showText ?? logo_config.show_text;
-    // Icon mark crop is ~844x764 (no embedded wordmark) — keep that aspect ratio when only height is given.
-    const computed_width = width ?? Math.round((height * 844) / 764);
+    // Icon mark is square (no embedded wordmark) — keep that aspect ratio when only height is given.
+    const computed_width = width ?? Math.round(height);
 
     return (
         <span

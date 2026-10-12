@@ -19,7 +19,7 @@ export default function ChunkLoader({ message }: { message: string }) {
         <div className='brand-loader'>
             <div className='brand-loader__card'>
                 <div className='brand-loader__stage'>
-                    <img src='/assets/branding/logo-v2.png' alt='Trade With Hunna' className='brand-loader__logo' />
+                    <img src='/assets/branding/logo-v2.png' alt='Murogi Trading Hub' className='brand-loader__logo' />
                     <svg className='brand-loader__glow' viewBox='0 0 1024 1024' aria-hidden='true'>
                         <circle className='brand-loader__dot brand-loader__dot--main' r='9' fill='#fff' />
                         <circle className='brand-loader__dot brand-loader__dot--arm-h' r='6' fill='#fff' />
@@ -29,11 +29,11 @@ export default function ChunkLoader({ message }: { message: string }) {
                 </div>
 
                 <div className='brand-loader__wordmark'>
-                    <span className='brand-loader__wordmark-a'>TRADE</span>
-                    <span className='brand-loader__wordmark-b'>WITH HUNNA</span>
+                    <span className='brand-loader__wordmark-a'>MUROGI</span>
+                    <span className='brand-loader__wordmark-b'>TRADING HUB</span>
                 </div>
                 <div className='brand-loader__subrow'>
-                    <span className='brand-loader__subrow-label'>TRADING HUB</span>
+                    <span className='brand-loader__subrow-label'>AUTOMATED TRADING</span>
                     <span className='brand-loader__live-pill'>
                         <span className='brand-loader__live-dot' /> LIVE
                     </span>
@@ -41,7 +41,7 @@ export default function ChunkLoader({ message }: { message: string }) {
 
                 <hr className='brand-loader__rule' />
 
-                <h1 className='brand-loader__welcome'>Welcome to Trade With Hunna</h1>
+                <h1 className='brand-loader__welcome'>Welcome to Murogi Trading Hub</h1>
                 <p className='brand-loader__tagline'>Empowering your financial journey.</p>
 
                 <div className='brand-loader__progress-track'>
