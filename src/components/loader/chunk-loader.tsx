@@ -17,6 +17,10 @@ const TICKER = [
 export default function ChunkLoader({ message }: { message: string }) {
     return (
         <div className='brand-loader'>
+            <div className='brand-loader__bg' aria-hidden='true'>
+                <span className='brand-loader__bg-candles' />
+                <span className='brand-loader__bg-line' />
+            </div>
             <div className='brand-loader__card'>
                 <div className='brand-loader__stage'>
                     <img src='/assets/branding/logo-v2.png' alt='Murogi Trading Hub' className='brand-loader__logo' />

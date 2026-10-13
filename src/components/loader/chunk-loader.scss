@@ -10,9 +10,69 @@
     background: var(--brand-secondary, #070b14);
     padding: 2.4rem 1.6rem;
     box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+// Watermark charts: decorative, scroll left -> right behind the card.
+.brand-loader__bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+
+    span {
+        position: absolute;
+        left: 0;
+        right: 0;
+        background-repeat: repeat-x;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    }
+}
+
+.brand-loader__bg-candles {
+    top: 10%;
+    height: 36%;
+    background-image: url('/assets/branding/loader-bg-candles.svg');
+    background-size: 720px 100%;
+    opacity: 0.09;
+    animation-name: brand-bg-scroll-candles;
+    animation-duration: 60s;
+}
+
+.brand-loader__bg-line {
+    bottom: 6%;
+    height: 40%;
+    background-image: url('/assets/branding/loader-bg-line.svg');
+    background-size: 900px 100%;
+    background-position: 0 100%;
+    opacity: 0.14;
+    animation-name: brand-bg-scroll-line;
+    animation-duration: 40s;
+}
+
+@keyframes brand-bg-scroll-candles {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 720px 0;
+    }
+}
+
+@keyframes brand-bg-scroll-line {
+    from {
+        background-position: 0 100%;
+    }
+    to {
+        background-position: 900px 100%;
+    }
 }
 
 .brand-loader__card {
+    position: relative;
+    z-index: 1;
     width: 100%;
     max-width: 380px;
     display: flex;
@@ -334,6 +394,8 @@
 }
 
 .brand-loader__ticker {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -370,6 +432,10 @@
     .brand-loader__spinner {
         animation: none;
         opacity: 0;
+    }
+
+    .brand-loader__bg span {
+        animation: none;
     }
 }
 
