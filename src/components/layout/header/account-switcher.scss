@@ -135,6 +135,13 @@
         margin-bottom: 0.2rem;
     }
 
+    &__flag {
+        flex-shrink: 0;
+        display: block;
+        border-radius: 50%;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25);
+    }
+
     &__account-type {
         @include typeface(--xxsmall-left-normal-green);
 
@@ -826,4 +833,10 @@
             color: var(--text-general) !important;
         }
     }
+}
+
+.acc-flag {
+    display: inline-flex;
+    overflow: hidden;
+    border-radius: 50%;
 }

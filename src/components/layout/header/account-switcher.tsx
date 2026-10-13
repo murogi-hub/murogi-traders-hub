@@ -7,6 +7,7 @@ import { api_base } from '@/external/bot-skeleton/services/api/api-base';
 import { useApiBase } from '@/hooks/useApiBase';
 import { useStore } from '@/hooks/useStore';
 import { isDemoAccount } from '@/utils/account-helpers';
+import UsFlagIcon from './us-flag-icon';
 import { Localize, localize } from '@deriv-com/translations';
 import { TAccountSwitcher } from './common/types';
 import AccountInfoWrapper from './account-info-wrapper';
@@ -152,11 +153,12 @@ const AccountSwitcher = observer(({ activeAccount }: TAccountSwitcher) => {
                     <span className='acc-info__id' aria-hidden='true'></span>
                     <div className='acc-info__content'>
                         <div className='acc-info__account-type-header'>
+                            {!isVirtual && <UsFlagIcon size={16} className='acc-info__flag' />}
                             <Text as='p' size='xs' className='acc-info__account-type'>
                                 {isVirtual ? (
-                                    <Localize i18n_default_text='Real account' />
-                                ) : (
                                     <Localize i18n_default_text='Demo account' />
+                                ) : (
+                                    <Localize i18n_default_text='Real account' />
                                 )}
                             </Text>
                             {showChevron && (
