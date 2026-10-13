@@ -75,10 +75,11 @@
         },
         "hostname": {
             "production": {
-                "com": "trade-with-hunna-bot.onrender.com"
+                "com": "murogi-traders-hub.onrender.com",
+                "legacy": "trade-with-hunna-bot.onrender.com"
             },
             "staging": {
-                "com": "trade-with-hunna-bot.onrender.com"
+                "com": "murogi-traders-hub.onrender.com"
             }
         },
         "auth2_url": {
