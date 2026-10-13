@@ -18,8 +18,14 @@ export default function ChunkLoader({ message }: { message: string }) {
     return (
         <div className='brand-loader'>
             <div className='brand-loader__bg' aria-hidden='true'>
-                <span className='brand-loader__bg-candles' />
-                <span className='brand-loader__bg-line' />
+                <span
+                    className='brand-loader__bg-candles'
+                    style={{ backgroundImage: "url('/assets/branding/loader-bg-candles.svg')" }}
+                />
+                <span
+                    className='brand-loader__bg-line'
+                    style={{ backgroundImage: "url('/assets/branding/loader-bg-line.svg')" }}
+                />
             </div>
             <div className='brand-loader__card'>
                 <div className='brand-loader__stage'>

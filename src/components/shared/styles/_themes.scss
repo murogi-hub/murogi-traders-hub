@@ -39,11 +39,28 @@
 
 
 
+
+
     /* Brand colors - dynamically generated from brand.config.json */
     --brand-white: #ffffff;
     --brand-dark-grey: #070b14;
     --brand-red-coral: #ff6a4d; /* legacy compatibility */
     --brand-orange: #8b7bff; /* legacy compatibility */
+
+    /* Dynamic brand colors (set by brand configuration) */
+    --brand-primary: #ff6a4d;
+    --brand-secondary: #070b14;
+    --brand-tertiary: #8b7bff;
+    --brand-success: #1fe6a8;
+    --brand-danger: #ff4757;
+    --brand-warning: #ffc94a;
+    --brand-info: #2dd4ff;
+    --brand-neutral: #7c88ab;
+
+    /* Brand typography - dynamically generated from brand.config.json */
+    --brand-font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --brand-font-secondary: Georgia, 'Times New Roman', Times, serif;
+    --brand-font-monospace: 'Courier New', Courier, monospace;
 
     /* Dynamic brand colors (set by brand configuration) */
     --brand-primary: #ff6a4d;
