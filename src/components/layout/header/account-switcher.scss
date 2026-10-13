@@ -837,6 +837,13 @@
 
 .acc-flag {
     display: inline-flex;
+    flex-shrink: 0;
     overflow: hidden;
     border-radius: 50%;
+}
+
+.acc-info__flag,
+.acc-dropdown__flag {
+    margin-inline-end: 6px;
+    vertical-align: middle;
 }

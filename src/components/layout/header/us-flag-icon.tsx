@@ -1,6 +1,6 @@
 import React from 'react';
 
-/** Small circular American flag, shown beside "Real account". */
+/** Small circular American flag, shown beside the balance on every account (demo and real). */
 type TUsFlagIcon = { size?: number; className?: string };
 
 const UsFlagIcon = ({ size = 16, className }: TUsFlagIcon) => {
